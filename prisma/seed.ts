@@ -1,7 +1,8 @@
-import { PrismaClient, Role } from "@prisma/client"
-import { hash } from "bcryptjs"
+import { PrismaClient } from "@prisma/client";
+import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient()
+
 async function main() {
   const user = await prisma.user.create({
     data: {
@@ -10,9 +11,11 @@ async function main() {
       password: await hash('123456', 10),
       phone: '1234567890',
       cpf: '1234567890',
-      role: Role.ADMIN
+      role: 'ADMIN'
     }
   })
+
+  console.log('User created:', user)
 }
 main()
   .then(async () => {
