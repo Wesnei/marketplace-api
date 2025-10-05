@@ -52,6 +52,10 @@ JWT_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV="development"
 BASE_URL="http://localhost:3000"
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 ### 4. Inicie o banco de dados com Docker
