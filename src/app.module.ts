@@ -12,7 +12,6 @@ import { CartModule } from './modules/cart/cart.module';
 import { AppController } from './app.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { MulterConfigService } from './core/infra/multer/multer-config.service';
-import { CloudinaryModule } from './cloudinary/cloudinary.module'; // Add this import
 
 @Module({
   controllers: [AppController],
@@ -31,7 +30,6 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module'; // Add this i
     CoreModule,
     ProductModule,
     CartModule,
-    CloudinaryModule, // Add this line
     CqrsModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,

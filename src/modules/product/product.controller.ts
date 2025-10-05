@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Query, Body, Param } from "@nestjs/common"; // Remove UploadedFile, UseInterceptors, BadRequestException
+import { Controller, Get, Post, Put, Delete, Query, Body, Param, UploadedFile, UseInterceptors, BadRequestException } from "@nestjs/common";
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { GetProductsDto } from "./queries/dto/get-products.dto";
 import { GetProductsQuery } from "./queries/impl/get-products.query";
@@ -8,10 +8,10 @@ import { UpdateProductCommand } from "./commands/impl/update-product.command";
 import { DeleteProductCommand } from "./commands/impl/delete-product.command";
 import { CreateProductDto } from "./commands/dto/create-product.dto";
 import { UpdateProductDtoWithoutId } from "./commands/dto/update-product.dto";
-import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from "@nestjs/swagger"; // Remove ApiConsumes
+import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiConsumes, ApiBody } from "@nestjs/swagger";
 import { Public } from "../auth/decorators/public.decorator";
 import { Roles } from "../../core/decorators/roles.decorator";
-// Remove FileInterceptor import
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags('Products')
 @Controller('products')
@@ -19,7 +19,6 @@ export class ProductController {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus
-    // Remove CloudinaryService injection since we're not using it directly in this controller anymore
   ) { }
 
   @Get()
@@ -57,7 +56,8 @@ export class ProductController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new product (Admin only)' })
-  // Remove FileInterceptor and ApiConsumes
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({
     status: 201, example: {
       id: '1',
@@ -82,21 +82,20 @@ export class ProductController {
   @ApiBearerAuth()
   @Roles(['ADMIN'])
   async createProduct(
-    // Remove @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() image: Express.Multer.File,
     @Body() createProductDto: CreateProductDto
   ) {
-    // Remove Cloudinary upload logic since imageUrl is now passed directly
     return this.commandBus.execute(new CreateProductCommand({
       ...createProductDto,
       price: Number(createProductDto.price),
-      // Provide a default imageUrl if not provided
-      imageUrl: createProductDto.imageUrl || ''
+      imageUrl: image.filename
     }));
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a product (Admin only)' })
-  // Remove FileInterceptor and ApiConsumes
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 200, example: {
     id: '1',
     name: 'iPhone 15',
@@ -111,14 +110,13 @@ export class ProductController {
   @Roles(['ADMIN'])
   async updateProduct(
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDtoWithoutId
-    // Remove @UploadedFile() image: Express.Multer.File,
+    @Body() updateProductDto: UpdateProductDtoWithoutId,
+    @UploadedFile() image: Express.Multer.File,
   ) {
-    // Remove Cloudinary upload logic since imageUrl is now passed directly
     return this.commandBus.execute(new UpdateProductCommand({
       id,
       price: updateProductDto.price ? Number(updateProductDto.price) : undefined,
-      imageUrl: updateProductDto.imageUrl, // Use imageUrl directly from DTO
+      imageUrl: image ? image.filename : undefined,
       description: updateProductDto.description ? updateProductDto.description : undefined,
       name: updateProductDto.name ? updateProductDto.name : undefined
     }));

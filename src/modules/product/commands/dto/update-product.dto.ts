@@ -16,14 +16,8 @@ export class UpdateProductDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ 
-    description: 'Product image URL (obtained from Cloudinary upload)', 
-    example: 'https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/ecommerce-products/image.jpg',
-    required: false
-  })
-  @IsString()
-  @IsOptional()
-  imageUrl?: string;
+  @ApiProperty({ description:'Product image', type: 'string', format: 'binary', required: false })
+  image: any;
 
   @ApiProperty({ description: 'Product price', example: 1199.99, required: false })
   @IsOptional()
