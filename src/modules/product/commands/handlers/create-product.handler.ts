@@ -13,7 +13,7 @@ export class CreateProductHandler implements ICommandHandler<CreateProductComman
             data: {
                 name,
                 description,
-                imageUrl,
+                imageUrl: imageUrl || '', // Provide default empty string if imageUrl is undefined
                 price
             }
         });

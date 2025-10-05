@@ -1,17 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { MulterOptionsFactory, MulterModuleOptions } from "@nestjs/platform-express";
-import { diskStorage } from "multer";
+import { memoryStorage } from "multer"; // Change from diskStorage to memoryStorage
 
 @Injectable()
 export class MulterConfigService implements MulterOptionsFactory {
   createMulterOptions(): MulterModuleOptions {
     return {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          cb(null, `${Date.now()}-${file.originalname}`);
-        }
-      })
+      storage: memoryStorage() // Use memory storage instead of disk storage
     };
   }
 }

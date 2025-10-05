@@ -16,10 +16,7 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
 
         const product = await this.prismaService.product.update({
             where: { id },
-            data: {
-                ...filteredData,
-                imageUrl: updateData.imageUrl ? updateData.imageUrl : undefined
-            }
+            data: filteredData // Use filteredData directly since we've already filtered out undefined values
         });
 
         if (!product) {
