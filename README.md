@@ -163,4 +163,4 @@ marketplace/
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `package.json` para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo `package.json` para mais detalhes e informações.
